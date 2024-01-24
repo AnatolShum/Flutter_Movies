@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'firebase_options.dart';
+import 'dart:async';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +30,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late final TextEditingController _email;
   late final TextEditingController _password;
+
+  static const MethodChannel keyMethodChannel = MethodChannel('apiKey');
 
   @override
   void initState() {
@@ -56,6 +60,15 @@ class _HomePageState extends State<HomePage> {
 
     return true;
   }
+
+  // Future<void> getApiKey() async {
+  //   try {
+  //     final String result = await keyMethodChannel.invokeMethod('getKey');
+  //     print(result);
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   void logIn() async {
     if (_validate()) {
