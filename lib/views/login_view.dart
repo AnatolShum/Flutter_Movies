@@ -97,6 +97,7 @@ class _LoginViewState extends State<LoginView> {
                     enableSuggestions: false,
                     autocorrect: false,
                   ),
+                  SizedBox(height: 10,),
                   CupertinoButton(
                     color: Colors.blue,
                     onPressed: () {
@@ -104,6 +105,15 @@ class _LoginViewState extends State<LoginView> {
                     },
                     child: const Text('Login'),
                   ),
+                  SizedBox(height: 10,),
+                  CupertinoButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        '/register/', 
+                        (route) => false);
+                    },
+                    child: const Text('Register'), 
+                    ),
                 ],
               );
             default:

@@ -59,9 +59,8 @@ class _RegisterViewState extends State<RegisterView> {
       final password = _password.text;
 
       try {
-        final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: email, 
-          password: password);
+        final userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: email, password: password);
         print(userCredential);
       } on FirebaseAuthException catch (e) {
         alertManager?.showAlert(e.message);
@@ -73,9 +72,18 @@ class _RegisterViewState extends State<RegisterView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Register'),
-          titleTextStyle: TextStyle(
-              fontSize: 35, fontWeight: FontWeight.w700, color: Colors.black)),
+        title: const Text('Register'),
+        titleTextStyle: TextStyle(
+            fontSize: 35, fontWeight: FontWeight.w700, color: Colors.black),
+        leadingWidth: 80,
+        leading: CupertinoNavigationBarBackButton(
+          previousPageTitle: 'Login',
+          onPressed: () {
+            Navigator.of(context).popAndPushNamed('/login/');
+          },
+        ),
+        centerTitle: true,
+      ),
       body: FutureBuilder(
         future: Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,
