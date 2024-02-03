@@ -1,8 +1,12 @@
+import 'dart:ffi';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/managers/alert_manager.dart';
 import 'package:movies/widgets/action_button.dart';
+import 'package:movies/widgets/profile_cell_view.dart';
+import 'package:movies/widgets/profile_header_view.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -13,6 +17,8 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   AlertManager? alertManager;
+
+  double _space = 30;
 
   void signOut() async {
     alertManager = AlertManager(context: context);
@@ -35,36 +41,41 @@ class _ProfileViewState extends State<ProfileView> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            CellView(child: const Text('User')),
-            ActionButton(
-                  onPressed: signOut,
-                  title: 'Sign Out',
-                  titleColor: CupertinoColors.systemRed,
-                ),
+            HeaderView(title: 'name'),
+            CellView(title: 'User'),
+            SizedBox(height: _space),
+            HeaderView(title: 'email'),
+            CellView(title: 'Email'),
+            SizedBox(height: _space),
+            HeaderView(title: 'member since'),
+            CellView(title: '01/01/2024'),
+            SizedBox(height: 44),
+            Card(
+              color: Colors.grey.withOpacity(0.1),
+              margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+              clipBehavior: Clip.hardEdge,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 44,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ActionButton(
+                          onPressed: signOut,
+                          title: 'Sign Out',
+                          titleColor: CupertinoColors.systemRed,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class CellView extends StatelessWidget {
-  final Widget child;
-  const CellView({super.key, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Colors.grey.withOpacity(0.1),
-      margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 44,
-            child: child,
-          ),
-        ],
       ),
     );
   }
