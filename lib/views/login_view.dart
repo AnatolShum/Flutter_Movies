@@ -2,9 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:movies/constants/routes.dart';
 import 'package:movies/managers/alert_manager.dart';
 import '../firebase_options.dart';
-import 'dart:developer' as devtools show log;
+// import 'dart:developer' as devtools show log;
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -76,9 +77,23 @@ class _LoginViewState extends State<LoginView> {
 
   void _pushTabBar() {
     Navigator.of(context).pushNamedAndRemoveUntil(
-      '/moviesTabBar/',
+      tabBarRoute,
       (route) => false,
     );
+  }
+
+  void _pushForgot() {
+     Navigator.of(context).pushNamedAndRemoveUntil(
+      forgotRoute,
+      (route) => false,
+      );
+  }
+
+  void _pushRegister() {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        registerRoute, 
+        (route) => false,
+        );
   }
 
   @override
@@ -139,11 +154,7 @@ class _LoginViewState extends State<LoginView> {
                                 children: [
                                   CupertinoButton(
                                     padding: EdgeInsets.only(left: 0),
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .pushNamedAndRemoveUntil(
-                                              '/forgot/', (route) => false);
-                                    },
+                                    onPressed: _pushForgot,
                                     child: const Text(
                                       'Forgot password?',
                                       style: TextStyle(
@@ -163,9 +174,7 @@ class _LoginViewState extends State<LoginView> {
                             child: CupertinoButton(
                               padding: EdgeInsets.all(0),
                               color: CupertinoColors.systemRed,
-                              onPressed: () {
-                                logIn();
-                              },
+                              onPressed: logIn,
                               child: const Text('Login'),
                             ),
                           ),
@@ -178,10 +187,7 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   Spacer(),
                   CupertinoButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                          '/register/', (route) => false);
-                    },
+                    onPressed: _pushRegister,
                     child: const Text(
                       'Create an account',
                       style: TextStyle(

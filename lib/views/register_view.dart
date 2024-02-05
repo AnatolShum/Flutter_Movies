@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:movies/constants/routes.dart';
 import '../firebase_options.dart';
 import '../managers/alert_manager.dart';
 
@@ -80,9 +81,13 @@ class _RegisterViewState extends State<RegisterView> {
 
   void _pushVerify() {
     Navigator.of(context).pushNamedAndRemoveUntil(
-      '/verify/',
+      verifyRoute,
       (route) => false,
     );
+  }
+
+  void _popLogin() {
+    Navigator.of(context).popAndPushNamed(loginRoute);
   }
 
   @override
@@ -95,9 +100,7 @@ class _RegisterViewState extends State<RegisterView> {
         leadingWidth: 80,
         leading: CupertinoNavigationBarBackButton(
           previousPageTitle: 'Login',
-          onPressed: () {
-            Navigator.of(context).popAndPushNamed('/login/');
-          },
+          onPressed: _popLogin,
         ),
         centerTitle: true,
         backgroundColor: CupertinoColors.systemGreen,

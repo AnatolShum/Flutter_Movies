@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:movies/constants/routes.dart';
 import 'package:movies/managers/alert_manager.dart';
 
 class ForgotView extends StatefulWidget {
@@ -59,7 +60,7 @@ class _ForgotViewState extends State<ForgotView> {
 
   void _pushLogIn() {
     Navigator.of(context).pushNamedAndRemoveUntil(
-      '/login/',
+      loginRoute,
       (route) => false,
     );
   }
@@ -73,7 +74,7 @@ class _ForgotViewState extends State<ForgotView> {
             fontSize: 35, fontWeight: FontWeight.w700, color: Colors.black),
         leading: CupertinoNavigationBarBackButton(
           onPressed: () {
-            Navigator.of(context).popAndPushNamed('/login/');
+            Navigator.of(context).popAndPushNamed(loginRoute);
           },
         ),
         centerTitle: true,
