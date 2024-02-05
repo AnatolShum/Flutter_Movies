@@ -37,7 +37,9 @@ class _RegisterViewState extends State<RegisterView> {
 
   bool _validate() {
     alertManager = AlertManager(context: context);
-    if (_email.text.trim().isEmpty && _userName.text.trim().isEmpty && _password.text.trim().isEmpty) {
+    if (_email.text.trim().isEmpty &&
+        _userName.text.trim().isEmpty &&
+        _password.text.trim().isEmpty) {
       alertManager?.showAlert('Please fill in all fields.');
       return false;
     }
@@ -63,13 +65,24 @@ class _RegisterViewState extends State<RegisterView> {
       final password = _password.text;
 
       try {
-        final userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: email, password: password);
+        final userCredential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
         userCredential.user?.updateDisplayName(userName);
+        _pushVerify();
       } on FirebaseAuthException catch (e) {
         alertManager?.showAlert(e.message);
       }
     }
+  }
+
+  void _pushVerify() {
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      '/verify/',
+      (route) => false,
+    );
   }
 
   @override
@@ -98,37 +111,73 @@ class _RegisterViewState extends State<RegisterView> {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextField(
-                    controller: _email,
-                    decoration:
-                        const InputDecoration(hintText: 'Email address'),
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    keyboardType: TextInputType.emailAddress,
+                  Spacer(),
+                  Card(
+                    color: Colors.white.withOpacity(0.5),
+                    margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(left: 20),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextField(
+                                controller: _email,
+                                decoration: const InputDecoration(
+                                    hintText: 'Email address'),
+                                enableSuggestions: false,
+                                autocorrect: false,
+                                keyboardType: TextInputType.emailAddress,
+                              ),
+                              TextField(
+                                controller: _userName,
+                                decoration: const InputDecoration(
+                                    hintText: 'User name'),
+                                enableSuggestions: false,
+                                autocorrect: false,
+                                keyboardType: TextInputType.name,
+                              ),
+                              TextField(
+                                controller: _password,
+                                decoration:
+                                    const InputDecoration(hintText: 'Password'),
+                                obscureText: true,
+                                enableSuggestions: false,
+                                autocorrect: false,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Card(
+                          margin: EdgeInsets.fromLTRB(15, 5, 15, 5),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: CupertinoButton(
+                              padding: EdgeInsets.all(0),
+                              color: CupertinoColors.systemBlue,
+                              onPressed: () {
+                                signUp();
+                              },
+                              child: const Text('Register'),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    ),
                   ),
-                  TextField(
-                    controller: _userName,
-                    decoration:
-                        const InputDecoration(hintText: 'User name'),
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    keyboardType: TextInputType.name,
-                  ),
-                  TextField(
-                    controller: _password,
-                    decoration: const InputDecoration(hintText: 'Password'),
-                    obscureText: true,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                  ),
-                  CupertinoButton(
-                    color: CupertinoColors.systemBlue,
-                    onPressed: () {
-                      signUp();
-                    },
-                    child: const Text('Register'),
-                  ),
+                  Spacer(),
                 ],
               );
             default:

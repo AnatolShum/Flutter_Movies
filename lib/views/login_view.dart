@@ -56,13 +56,29 @@ class _LoginViewState extends State<LoginView> {
       final password = _password.text;
 
       try {
-        final userCredential = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: email, password: password);
-        devtools.log(userCredential.toString());
+        final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+        final user = userCredential.user;
+        if (user != null) {
+          if (user.emailVerified) {
+            _pushTabBar();
+          } else {
+            alertManager?.showAlert('Please verify your email address.');
+          }
+        }
       } on FirebaseAuthException catch (e) {
         alertManager?.showAlert(e.message);
       }
     }
+  }
+
+  void _pushTabBar() {
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      '/moviesTabBar/',
+      (route) => false,
+    );
   }
 
   @override
@@ -97,57 +113,62 @@ class _LoginViewState extends State<LoginView> {
                           child: Column(
                             children: [
                               SizedBox(
-                          height: 10,
-                        ),
-                        TextField(
-                          controller: _email,
-                          decoration:
-                              const InputDecoration(hintText: 'Email address'),
-                          enableSuggestions: false,
-                          autocorrect: false,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        TextField(
-                          controller: _password,
-                          decoration:
-                              const InputDecoration(hintText: 'Password'),
-                          obscureText: true,
-                          enableSuggestions: false,
-                          autocorrect: false,
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            CupertinoButton(
-                              padding: EdgeInsets.only(left: 0),
-                              onPressed: () {
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                    '/forgot/', (route) => false);
-                              },
-                              child: const Text(
-                                'Forgot password?',
-                                style: TextStyle(
-                                    color: Color.fromARGB(190, 0, 0, 0),
-                                    fontWeight: FontWeight.w600),
+                                height: 10,
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
+                              TextField(
+                                controller: _email,
+                                decoration: const InputDecoration(
+                                    hintText: 'Email address'),
+                                enableSuggestions: false,
+                                autocorrect: false,
+                                keyboardType: TextInputType.emailAddress,
+                              ),
+                              TextField(
+                                controller: _password,
+                                decoration:
+                                    const InputDecoration(hintText: 'Password'),
+                                obscureText: true,
+                                enableSuggestions: false,
+                                autocorrect: false,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  CupertinoButton(
+                                    padding: EdgeInsets.only(left: 0),
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pushNamedAndRemoveUntil(
+                                              '/forgot/', (route) => false);
+                                    },
+                                    child: const Text(
+                                      'Forgot password?',
+                                      style: TextStyle(
+                                          color: Color.fromARGB(190, 0, 0, 0),
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),
-                        CupertinoButton(
-                          color: CupertinoColors.systemRed,
-                          onPressed: () {
-                            logIn();
-                          },
-                          child: const Text('Login'),
+                        Card(
+                          margin: EdgeInsets.fromLTRB(15, 5, 15, 5),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: CupertinoButton(
+                              padding: EdgeInsets.all(0),
+                              color: CupertinoColors.systemRed,
+                              onPressed: () {
+                                logIn();
+                              },
+                              child: const Text('Login'),
+                            ),
+                          ),
                         ),
                         SizedBox(
                           height: 10,
