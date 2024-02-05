@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movies/widgets/color_scaffold.dart';
 
 class FavouritesView extends StatefulWidget {
   const FavouritesView({super.key});
@@ -10,9 +11,9 @@ class FavouritesView extends StatefulWidget {
 class _FavouritesViewState extends State<FavouritesView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Favourites'),),
-      backgroundColor: Colors.green,
-    );
+    return ColoredScaffoldWidget(
+      title: 'Movies',
+      child: Placeholder(),
+      );
   }
 }

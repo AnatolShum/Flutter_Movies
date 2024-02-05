@@ -16,11 +16,13 @@ class _RegisterViewState extends State<RegisterView> {
   AlertManager? alertManager;
 
   late final TextEditingController _email;
+  late final TextEditingController _userName;
   late final TextEditingController _password;
 
   @override
   void initState() {
     _email = TextEditingController();
+    _userName = TextEditingController();
     _password = TextEditingController();
     super.initState();
   }
@@ -28,13 +30,14 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   void dispose() {
     _email.dispose();
+    _userName.dispose();
     _password.dispose();
     super.dispose();
   }
 
   bool _validate() {
     alertManager = AlertManager(context: context);
-    if (_email.text.trim().isEmpty || _password.text.trim().isEmpty) {
+    if (_email.text.trim().isEmpty && _userName.text.trim().isEmpty && _password.text.trim().isEmpty) {
       alertManager?.showAlert('Please fill in all fields.');
       return false;
     }
@@ -56,12 +59,13 @@ class _RegisterViewState extends State<RegisterView> {
     if (_validate()) {
       alertManager = AlertManager(context: context);
       final email = _email.text;
+      final userName = _userName.text;
       final password = _password.text;
 
       try {
         final userCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: email, password: password);
-        print(userCredential);
+        userCredential.user?.updateDisplayName(userName);
       } on FirebaseAuthException catch (e) {
         alertManager?.showAlert(e.message);
       }
@@ -100,6 +104,14 @@ class _RegisterViewState extends State<RegisterView> {
                     enableSuggestions: false,
                     autocorrect: false,
                     keyboardType: TextInputType.emailAddress,
+                  ),
+                  TextField(
+                    controller: _userName,
+                    decoration:
+                        const InputDecoration(hintText: 'User name'),
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    keyboardType: TextInputType.name,
                   ),
                   TextField(
                     controller: _password,

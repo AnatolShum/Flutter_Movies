@@ -13,7 +13,7 @@ class MoviesTabBar extends StatefulWidget {
 }
 
 class _MoviesTabBarState extends State<MoviesTabBar> {
-  int _selectedIndex = 3;
+  int _selectedIndex = 0;
 
   static const List<Widget> _tabBarWidgets = [
     MoviesView(),
@@ -54,12 +54,12 @@ class _MoviesTabBarState extends State<MoviesTabBar> {
             ),
         ],
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.transparent,
+        backgroundColor: CupertinoColors.systemCyan,
         currentIndex: _selectedIndex,
-        selectedItemColor: CupertinoColors.systemCyan,
-        selectedFontSize: 12,
-        unselectedItemColor: CupertinoColors.systemGrey,
-        unselectedFontSize: 12,
+        selectedItemColor: CupertinoColors.label,
+        selectedFontSize: 14,
+        unselectedItemColor: CupertinoColors.secondaryLabel,
+        unselectedFontSize: 14,
         showUnselectedLabels: true,
         onTap: _itemTapped,
       ),

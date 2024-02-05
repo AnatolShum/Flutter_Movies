@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movies/widgets/color_scaffold.dart';
 
 class MoviesView extends StatefulWidget {
   const MoviesView({super.key});
@@ -10,10 +11,10 @@ class MoviesView extends StatefulWidget {
 class _MoviesViewState extends State<MoviesView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Movies'),),
-      backgroundColor: Colors.cyan,
-    );
+    return ColoredScaffoldWidget(
+      title: 'Movies',
+      child: Placeholder(),
+      );
   }
 }
 

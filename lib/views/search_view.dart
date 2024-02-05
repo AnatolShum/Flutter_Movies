@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movies/widgets/color_scaffold.dart';
 
 class SearchView extends StatefulWidget {
   const SearchView({super.key});
@@ -10,9 +11,9 @@ class SearchView extends StatefulWidget {
 class _SearchViewState extends State<SearchView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Search'),),
-      backgroundColor: Colors.pink,
-    );
+    return ColoredScaffoldWidget(
+      title: 'Movies',
+      child: Placeholder(),
+      );
   }
 }

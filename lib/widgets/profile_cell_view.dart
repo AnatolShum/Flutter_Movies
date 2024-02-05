@@ -9,7 +9,7 @@ class CellView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.grey.withOpacity(0.1),
+      color: Colors.white.withOpacity(0.5),
       margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
       clipBehavior: Clip.hardEdge,
       child: Column(
