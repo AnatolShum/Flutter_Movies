@@ -24,9 +24,14 @@ class _ProfileViewState extends State<ProfileView> {
 
     try {
       await FirebaseAuth.instance.signOut();
+      _pushLogIn();
     } on FirebaseAuthException catch (e) {
       alertManager?.showAlert(e.message);
     }
+  }
+
+  void _pushLogIn() {
+    Navigator.of(context).pushNamedAndRemoveUntil('/login/', (_) => false);
   }
 
   String formattedDate() {

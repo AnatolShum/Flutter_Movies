@@ -9,8 +9,6 @@ class ActionButton extends StatelessWidget {
 
   const ActionButton({super.key, this.color, required this.onPressed, required this.title, this.titleColor});
 
-  
-
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(

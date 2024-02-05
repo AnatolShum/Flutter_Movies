@@ -87,7 +87,9 @@ class _RegisterViewState extends State<RegisterView> {
           },
         ),
         centerTitle: true,
+        backgroundColor: CupertinoColors.systemGreen,
       ),
+      backgroundColor: CupertinoColors.systemGreen,
       body: FutureBuilder(
         future: Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,
@@ -121,7 +123,7 @@ class _RegisterViewState extends State<RegisterView> {
                     autocorrect: false,
                   ),
                   CupertinoButton(
-                    color: Colors.blue,
+                    color: CupertinoColors.systemBlue,
                     onPressed: () {
                       signUp();
                     },
