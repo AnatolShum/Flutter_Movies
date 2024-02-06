@@ -12,11 +12,14 @@ class AlertError extends StatelessWidget {
       content: Text(content),
       actions: <Widget>[
         TextButton(
-            onPressed: () => Navigator.pop(context, 'Cancel'),
-            child: Text(
-              'Ok',
-              style: TextStyle(color: CupertinoColors.systemBlue),
-            ))
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            'Ok',
+            style: TextStyle(color: CupertinoColors.systemBlue),
+          ),
+        )
       ],
     );
   }

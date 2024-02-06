@@ -22,7 +22,9 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
       _pushLogIn();
     } on FirebaseAuthException catch (e) {
       alertManager?.showAlert(e.message);
-    }
+    } catch (e) {
+         alertManager?.showAlert(e.toString());
+      }
   }
 
   void _pushLogIn() {

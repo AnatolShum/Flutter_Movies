@@ -75,6 +75,8 @@ class _RegisterViewState extends State<RegisterView> {
         _pushVerify();
       } on FirebaseAuthException catch (e) {
         alertManager?.showAlert(e.message);
+      } catch (e) {
+         alertManager?.showAlert(e.toString());
       }
     }
   }

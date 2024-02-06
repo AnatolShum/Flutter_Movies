@@ -54,6 +54,8 @@ class _ForgotViewState extends State<ForgotView> {
         _pushLogIn();
       } on FirebaseAuthException catch (e) {
         alertManager?.showAlert(e.message);
+      } catch (e) {
+         alertManager?.showAlert(e.toString());
       }
     }
   }
