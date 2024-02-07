@@ -1,8 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/constants/routes.dart';
 import 'package:movies/managers/alert_manager.dart';
+import 'package:movies/services/auth/auth_exceptions.dart';
+import 'package:movies/services/auth/auth_service.dart';
 
 class ForgotView extends StatefulWidget {
   const ForgotView({super.key});
@@ -50,12 +51,16 @@ class _ForgotViewState extends State<ForgotView> {
       final email = _email.text;
 
       try {
-        await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+        await AuthService.firebase().sendPasswordReset(email);
         _pushLogIn();
-      } on FirebaseAuthException catch (e) {
-        await alertManager?.showAlert(e.message);
-      } catch (e) {
-         await alertManager?.showAlert(e.toString());
+      } on UserNotFoundAuthException {
+        await alertManager?.showAlert('User not found');
+      } on InvalidEmailAuthException {
+        await alertManager?.showAlert('Invalid email address');
+      } on GenericAuthException {
+        await alertManager?.showAlert('Failed to send email');
+      } catch (_) {
+        await alertManager?.showAlert('Failed to send email');
       }
     }
   }

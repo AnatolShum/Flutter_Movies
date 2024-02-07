@@ -1,9 +1,12 @@
 import 'package:movies/services/auth/auth_provider.dart';
 import 'package:movies/services/auth/auth_user.dart';
+import 'package:movies/services/auth/firebase_auth_provider.dart';
 
 class AuthService implements AuthProvider {
   final AuthProvider provider;
   const AuthService(this.provider);
+
+  factory AuthService.firebase() => AuthService(FirebaseAuthProvider());
 
   @override
   Future<AuthUser> createUser({
@@ -35,4 +38,10 @@ class AuthService implements AuthProvider {
 
   @override
   Future<void> signOut() => provider.signOut();
+  
+  @override
+  Future<void> initialize() => provider.initialize();
+  
+  @override
+  Future<void> sendPasswordReset(String email) => provider.sendPasswordReset(email);
 }

@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:movies/firebase_options.dart';
 import 'package:movies/services/auth/auth_user.dart';
 import 'package:movies/services/auth/auth_provider.dart';
 import 'package:movies/services/auth/auth_exceptions.dart';
@@ -5,6 +7,13 @@ import 'package:firebase_auth/firebase_auth.dart'
     show FirebaseAuth, FirebaseAuthException;
 
 class FirebaseAuthProvider implements AuthProvider {
+  @override
+  Future<void> initialize() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
   @override
   AuthUser? get currentUser {
     final user = FirebaseAuth.instance.currentUser;
@@ -77,6 +86,7 @@ class FirebaseAuthProvider implements AuthProvider {
         email: email,
         password: password,
       );
+
       final userForUpdate = userCredential.user;
       if (userForUpdate != null) {
         await userForUpdate.updateDisplayName(userName);
@@ -96,6 +106,24 @@ class FirebaseAuthProvider implements AuthProvider {
           throw WeakPasswordAuthException();
         case 'email-already-in-use':
           throw EmailAlreadyInUseAuthException();
+        case 'invalid-email':
+          throw InvalidEmailAuthException();
+        default:
+          throw GenericAuthException();
+      }
+    } catch (_) {
+      throw GenericAuthException();
+    }
+  }
+  
+  @override
+  Future<void> sendPasswordReset(String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    }  on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'user-not-found':
+          throw UserNotFoundAuthException();
         case 'invalid-email':
           throw InvalidEmailAuthException();
         default:

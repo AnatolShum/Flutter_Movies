@@ -1,8 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/constants/routes.dart';
 import 'package:movies/managers/alert_manager.dart';
+import 'package:movies/services/auth/auth_exceptions.dart';
+import 'package:movies/services/auth/auth_service.dart';
 
 class VerifyEmailView extends StatefulWidget {
   const VerifyEmailView({super.key});
@@ -17,15 +18,16 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
   void sendVerification() async {
     alertManager = AlertManager(context: context);
     try {
-      final user = FirebaseAuth.instance.currentUser;
-      await user?.sendEmailVerification();
-      await FirebaseAuth.instance.signOut();
+      await AuthService.firebase().sendEmailVerification();
+      await AuthService.firebase().signOut();
       _pushLogIn();
-    } on FirebaseAuthException catch (e) {
-      await alertManager?.showAlert(e.message);
-    } catch (e) {
-        await alertManager?.showAlert(e.toString());
-      }
+    } on UserNotLoggedInAuthException {
+      await alertManager?.showAlert('Authentication error');
+    } on GenericAuthException {
+      await alertManager?.showAlert('Failed to send email');
+    } catch (_) {
+      await alertManager?.showAlert('Failed to send email');
+    }
   }
 
   void _pushLogIn() {

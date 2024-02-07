@@ -1,10 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/constants/routes.dart';
-import '../firebase_options.dart';
-import '../managers/alert_manager.dart';
+import 'package:movies/managers/alert_manager.dart';
+import 'package:movies/services/auth/auth_exceptions.dart';
+import 'package:movies/services/auth/auth_service.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -66,17 +65,20 @@ class _RegisterViewState extends State<RegisterView> {
       final password = _password.text;
 
       try {
-        final userCredential =
-            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        await AuthService.firebase().createUser(
           email: email,
+          userName: userName,
           password: password,
         );
-        userCredential.user?.updateDisplayName(userName);
         _pushVerify();
-      } on FirebaseAuthException catch (e) {
-        await alertManager?.showAlert(e.message);
-      } catch (e) {
-         await alertManager?.showAlert(e.toString());
+      } on WeakPasswordAuthException {
+        await alertManager?.showAlert('Weak password');
+      } on EmailAlreadyInUseAuthException {
+        await alertManager?.showAlert('Email is already in use');
+      } on InvalidEmailAuthException {
+        await alertManager?.showAlert('Invalid email address');
+      } on GenericAuthException {
+        await alertManager?.showAlert('Authentication error');
       }
     }
   }
@@ -108,104 +110,74 @@ class _RegisterViewState extends State<RegisterView> {
         backgroundColor: CupertinoColors.systemGreen,
       ),
       backgroundColor: CupertinoColors.systemGreen,
-      body: FutureBuilder(
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        ),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Spacer(),
-                  Card(
-                    color: Colors.white.withOpacity(0.5),
-                    margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.only(left: 20),
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 10,
-                              ),
-                              TextField(
-                                controller: _email,
-                                decoration: const InputDecoration(
-                                    hintText: 'Email address'),
-                                enableSuggestions: false,
-                                autocorrect: false,
-                                keyboardType: TextInputType.emailAddress,
-                              ),
-                              TextField(
-                                controller: _userName,
-                                decoration: const InputDecoration(
-                                    hintText: 'User name'),
-                                enableSuggestions: false,
-                                autocorrect: false,
-                                keyboardType: TextInputType.name,
-                              ),
-                              TextField(
-                                controller: _password,
-                                decoration:
-                                    const InputDecoration(hintText: 'Password'),
-                                obscureText: true,
-                                enableSuggestions: false,
-                                autocorrect: false,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Card(
-                          margin: EdgeInsets.fromLTRB(15, 5, 15, 5),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: CupertinoButton(
-                              padding: EdgeInsets.all(0),
-                              color: CupertinoColors.systemBlue,
-                              onPressed: () {
-                                signUp();
-                              },
-                              child: const Text('Register'),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                      ],
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Spacer(),
+          Card(
+            color: Colors.white.withOpacity(0.5),
+            margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        controller: _email,
+                        decoration:
+                            const InputDecoration(hintText: 'Email address'),
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      TextField(
+                        controller: _userName,
+                        decoration:
+                            const InputDecoration(hintText: 'User name'),
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        keyboardType: TextInputType.name,
+                      ),
+                      TextField(
+                        controller: _password,
+                        decoration: const InputDecoration(hintText: 'Password'),
+                        obscureText: true,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  ),
+                ),
+                Card(
+                  margin: EdgeInsets.fromLTRB(15, 5, 15, 5),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: CupertinoButton(
+                      padding: EdgeInsets.all(0),
+                      color: CupertinoColors.systemBlue,
+                      onPressed: () {
+                        signUp();
+                      },
+                      child: const Text('Register'),
                     ),
                   ),
-                  Spacer(),
-                ],
-              );
-            default:
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const CupertinoActivityIndicator(
-                      radius: 14,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    const Text(
-                      "Loading...",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
-                    ),
-                  ],
                 ),
-              );
-          }
-        },
+                SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
+          ),
+          Spacer(),
+        ],
       ),
     );
   }

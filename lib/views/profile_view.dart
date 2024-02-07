@@ -1,8 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/constants/routes.dart';
 import 'package:movies/managers/alert_manager.dart';
+import 'package:movies/services/auth/auth_exceptions.dart';
+import 'package:movies/services/auth/auth_service.dart';
 import 'package:movies/widgets/action_button.dart';
 import 'package:movies/widgets/color_scaffold.dart';
 import 'package:movies/widgets/profile_cell_view.dart';
@@ -17,20 +18,20 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   AlertManager? alertManager;
-  final user = FirebaseAuth.instance.currentUser;
+  final user = AuthService.firebase().currentUser;
   double _space = 30;
 
   void signOut() async {
     alertManager = AlertManager(context: context);
 
     try {
-      await FirebaseAuth.instance.signOut();
+      await AuthService.firebase().signOut();
       _pushLogIn();
-    } on FirebaseAuthException catch (e) {
-      await alertManager?.showAlert(e.message);
-    } catch (e) {
-         await alertManager?.showAlert(e.toString());
-      }
+    } on UserNotLoggedInAuthException {
+      await alertManager?.showAlert('Authentication error');
+    } catch (_) {
+      await alertManager?.showAlert('Authentication error');
+    }
   }
 
   void _pushLogIn() {
@@ -41,7 +42,7 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   String formattedDate() {
-    final creationTime = user?.metadata.creationTime;
+    final creationTime = user?.creationTime;
     if (creationTime != null) {
       final fullDate =
           DateTime(creationTime.year, creationTime.month, creationTime.day)
@@ -69,7 +70,7 @@ class _ProfileViewState extends State<ProfileView> {
             ),
             SizedBox(height: _space),
             HeaderView(title: 'name'),
-            CellView(title: user?.displayName ?? 'N/A'),
+            CellView(title: user?.userName ?? 'N/A'),
             SizedBox(height: _space),
             HeaderView(title: 'email'),
             CellView(title: user?.email ?? 'N/A'),
