@@ -27,9 +27,9 @@ class _ProfileViewState extends State<ProfileView> {
       await FirebaseAuth.instance.signOut();
       _pushLogIn();
     } on FirebaseAuthException catch (e) {
-      alertManager?.showAlert(e.message);
+      await alertManager?.showAlert(e.message);
     } catch (e) {
-         alertManager?.showAlert(e.toString());
+         await alertManager?.showAlert(e.toString());
       }
   }
 

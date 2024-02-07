@@ -57,22 +57,21 @@ class _LoginViewState extends State<LoginView> {
       final password = _password.text;
 
       try {
-        final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        final userCredential =
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
           password: password,
         );
         final user = userCredential.user;
-        if (user != null) {
-          if (user.emailVerified) {
-            _pushTabBar();
-          } else {
-            alertManager?.showAlert('Please verify your email address.');
-          }
+        if (user?.emailVerified ?? false) {
+          _pushTabBar();
+        } else {
+          await alertManager?.showAlert('Please verify your email address.');
         }
       } on FirebaseAuthException catch (e) {
-        alertManager?.showAlert(e.message);
+        await alertManager?.showAlert(e.message);
       } catch (e) {
-         alertManager?.showAlert(e.toString());
+        await alertManager?.showAlert(e.toString());
       }
     }
   }
@@ -85,17 +84,17 @@ class _LoginViewState extends State<LoginView> {
   }
 
   void _pushForgot() {
-     Navigator.of(context).pushNamedAndRemoveUntil(
+    Navigator.of(context).pushNamedAndRemoveUntil(
       forgotRoute,
       (route) => false,
-      );
+    );
   }
 
   void _pushRegister() {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        registerRoute, 
-        (route) => false,
-        );
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      registerRoute,
+      (route) => false,
+    );
   }
 
   @override

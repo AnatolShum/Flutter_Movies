@@ -6,9 +6,9 @@ class AlertManager {
 
   AlertManager({required this.context});
   
-  void showAlert(String? error) {
+  Future<void> showAlert(String? error) {
     AlertError alert = AlertError(error ?? "An undefined Error happened.");
-    showDialog(
+    return showDialog(
         context: context,
         builder: (BuildContext context) {
           return alert;

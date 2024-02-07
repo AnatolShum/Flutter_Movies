@@ -53,9 +53,9 @@ class _ForgotViewState extends State<ForgotView> {
         await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
         _pushLogIn();
       } on FirebaseAuthException catch (e) {
-        alertManager?.showAlert(e.message);
+        await alertManager?.showAlert(e.message);
       } catch (e) {
-         alertManager?.showAlert(e.toString());
+         await alertManager?.showAlert(e.toString());
       }
     }
   }
