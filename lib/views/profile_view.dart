@@ -28,9 +28,9 @@ class _ProfileViewState extends State<ProfileView> {
       await AuthService.firebase().signOut();
       _pushLogIn();
     } on UserNotLoggedInAuthException {
-      await alertManager?.showAlert('Authentication error');
+      await alertManager?.showAlert('User not logged in');
     } catch (_) {
-      await alertManager?.showAlert('Authentication error');
+      await alertManager?.showAlert('Failed to sign out');
     }
   }
 

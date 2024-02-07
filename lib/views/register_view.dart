@@ -78,7 +78,9 @@ class _RegisterViewState extends State<RegisterView> {
       } on InvalidEmailAuthException {
         await alertManager?.showAlert('Invalid email address');
       } on GenericAuthException {
-        await alertManager?.showAlert('Authentication error');
+        await alertManager?.showAlert('Failed to register');
+      } catch (_) {
+        await alertManager?.showAlert('Failed to register');
       }
     }
   }

@@ -22,7 +22,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
       await AuthService.firebase().signOut();
       _pushLogIn();
     } on UserNotLoggedInAuthException {
-      await alertManager?.showAlert('Authentication error');
+      await alertManager?.showAlert('User not logged in');
     } on GenericAuthException {
       await alertManager?.showAlert('Failed to send email');
     } catch (_) {
