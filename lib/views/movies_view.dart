@@ -17,16 +17,3 @@ class _MoviesViewState extends State<MoviesView> {
       );
   }
 }
-
-
-
-// final MethodChannel keyMethodChannel = MethodChannel('apiKey');
-
-// Future<void> getApiKey() async {
-  //   try {
-  //     final String result = await keyMethodChannel.invokeMethod('getKey');
-  //     print(result);
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }

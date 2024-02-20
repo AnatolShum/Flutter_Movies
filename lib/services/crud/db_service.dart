@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'dart:async';
 import 'package:movies/services/crud/db_constants.dart';
 import 'package:movies/services/crud/db_exceptions.dart';
@@ -19,9 +20,11 @@ class DatabaseService {
   final _favouritesStreamController =
       StreamController<List<DatabaseFavourites>>.broadcast();
 
-  Stream<List<DatabaseFavourites>> get allFavourites => _favouritesStreamController.stream;
+  Stream<List<DatabaseFavourites>> get allFavourites =>
+      _favouritesStreamController.stream;
 
-  Future<DatabaseUser> getOrCreateUser({required String name, required String email}) async {
+  Future<DatabaseUser> getOrCreateUser(
+      {required String name, required String email}) async {
     try {
       final user = await getUser(email: email);
       return user;
@@ -30,6 +33,20 @@ class DatabaseService {
       return createdUser;
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<void> toggleFavourites({
+    required DatabaseUser owner,
+    required int movieId,
+  }) async {
+    final Iterable<DatabaseFavourites> favourites = await getAllFavourites();
+    final DatabaseFavourites? exist = favourites
+        .firstWhereOrNull((favourite) => favourite.movieId == movieId);
+    if (exist != null) {
+      await deleteFavourite(id: exist.id);
+    } else {
+      await createFavourite(owner: owner, movieId: movieId);
     }
   }
 
@@ -77,7 +94,7 @@ class DatabaseService {
     if (favourites.isEmpty) {
       throw CouldNotFindFavouriteException();
     } else {
-      final favourite =  DatabaseFavourites.fromRow(favourites.first);
+      final favourite = DatabaseFavourites.fromRow(favourites.first);
       _favourites.removeWhere((favourite) => favourite.movieId == movieID);
       _favourites.add(favourite);
       _favouritesStreamController.add(_favourites);
