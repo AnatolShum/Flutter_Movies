@@ -8,11 +8,49 @@ import 'package:http/http.dart' as http;
 
 class NetworkService {
   static final _shared = NetworkService._sharedInstance();
-  NetworkService._sharedInstance();
+  NetworkService._sharedInstance() {
+    _nowPlayingStreamController = StreamController<List<Movie>>.broadcast(
+      onListen: () {
+        _nowPlayingStreamController.sink.add(_nowPlaying);
+      },
+    );
+  }
   factory NetworkService() => _shared;
+
+  List<Movie> _nowPlaying = [];
+  late final StreamController<List<Movie>> _nowPlayingStreamController;
+  Stream<List<Movie>> get allNowPlaying => _nowPlayingStreamController.stream;
 
   final MethodChannel _keyMethodChannel = MethodChannel('apiKey');
   final _client = http.Client();
+
+  void _casheItems({required ArgumentType type, required List<Movie> movies}) {
+    switch (type) {
+      case ArgumentType.movie:
+        break;
+      case ArgumentType.videos:
+        break;
+      case ArgumentType.photos:
+        break;
+      case ArgumentType.search:
+        break;
+      case ArgumentType.nowPlaying:
+        for (final movie in movies) {
+          if (_nowPlaying.isEmpty) {
+            _nowPlaying.add(movie);
+          } else {
+            if (!_nowPlaying.contains(movie)) {
+                _nowPlaying.add(movie);
+            }
+          }
+        }
+        _nowPlayingStreamController.add(_nowPlaying);
+      case ArgumentType.topRated:
+        break;
+      case ArgumentType.popular:
+        break;
+    }
+  }
 
   Future<String> _getApiKey() async {
     try {
@@ -76,7 +114,9 @@ class NetworkService {
   List<Movie> _parseMovies(String responseBody) {
     final parsed = (jsonDecode(responseBody));
     final resultList = parsed['results'] as List;
-    return resultList.map<Movie>((json) => Movie.fromJson(json as Map<String?, dynamic>)).toList();
+    return resultList
+        .map<Movie>((json) => Movie.fromJson(json as Map<String?, dynamic>))
+        .toList();
   }
 
   Future<List<Movie>> fetchMovies({
@@ -92,7 +132,9 @@ class NetworkService {
         query: query,
         page: page,
       );
-      return _parseMovies(response.body);
+      final movies = _parseMovies(response.body);
+      _casheItems(type: type, movies: movies);
+      return movies;
     } on UrlNotFoundException {
       throw ResponseErrorException();
     }

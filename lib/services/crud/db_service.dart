@@ -14,11 +14,16 @@ class DatabaseService {
   List<DatabaseFavourites> _favourites = [];
 
   static final _shared = DatabaseService._sharedInstance();
-  DatabaseService._sharedInstance();
+  DatabaseService._sharedInstance() {
+    _favouritesStreamController = StreamController<List<DatabaseFavourites>>.broadcast(
+      onListen: () {
+        _favouritesStreamController.sink.add(_favourites);
+      },
+    );
+  }
   factory DatabaseService() => _shared;
 
-  final _favouritesStreamController =
-      StreamController<List<DatabaseFavourites>>.broadcast();
+  late final StreamController<List<DatabaseFavourites>> _favouritesStreamController;
 
   Stream<List<DatabaseFavourites>> get allFavourites =>
       _favouritesStreamController.stream;

@@ -28,4 +28,14 @@ class Movie {
       vote: json['vote_average'] as double?,
     );
   }
+
+  @override
+  String toString() =>
+      'Movie: ID = $id, title = $title';
+
+  @override
+  bool operator ==(covariant Movie other) => id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }

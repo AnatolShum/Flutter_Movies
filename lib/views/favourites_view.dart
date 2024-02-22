@@ -12,7 +12,7 @@ class FavouritesView extends StatefulWidget {
 }
 
 class _FavouritesViewState extends State<FavouritesView> {
-  DatabaseFavourites? _favourite;
+  List<DatabaseFavourites> _favourites = [];
   late final DatabaseService _databaseService;
   String get userEmail => AuthService.firebase().currentUser!.email;
   String get userName => AuthService.firebase().currentUser!.userName;
@@ -22,12 +22,6 @@ class _FavouritesViewState extends State<FavouritesView> {
     _databaseService = DatabaseService();
     _databaseService.open();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _databaseService.close();
-    super.dispose();
   }
 
   @override
@@ -46,9 +40,24 @@ class _FavouritesViewState extends State<FavouritesView> {
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
                     case ConnectionState.active:
-                      return Center();
+                      if (snapshot.hasData) {
+                        _favourites = snapshot.data as List<DatabaseFavourites>;
+                        return ListView.builder(
+                        itemCount: _favourites.length,
+                        itemBuilder: (context, index) {
+                          final item = _favourites[index];
+                          return Placeholder();
+                        },
+                        );
+                      } else {
+                        return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                      }
                     default:
-                      return Center(child: CircularProgressIndicator(),);
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
                   }
                 },
               );
