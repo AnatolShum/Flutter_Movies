@@ -96,6 +96,11 @@ class NetworkService {
     }
   }
 
+  String? getImageUri(String? path) {
+    if (path == null) return null;
+    return 'https://image.tmdb.org/t/p/w500$path';
+  }
+
   Future<http.Response> _networkRequest({
     required ArgumentType type,
     int? id,

@@ -43,8 +43,8 @@ class _MoviesViewState extends State<MoviesView> {
                           itemCount: _nowPlaying.length,
                           itemBuilder:(context, index) {
                             final item = _nowPlaying[index];
-                            final title = item.title ?? '';
-                            return Text(title);
+                            final uri = _networkService.getImageUri(item.poster);
+                            return Image.network(uri!);
                           },
                         );
                       } else {
